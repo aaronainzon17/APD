@@ -1,52 +1,81 @@
 #include<bits/stdc++.h>
  
 using namespace std;
- 
-vector<vector<int> > graph;
-bool vis[100011];
-int i,j;
- 
-vector<int> solve_dominant(int n,int e)
-{
-	vector<int> S;
-	for(i=0;i<n;i++)
-	{
-		if(!vis[i])
-		{
-			S.push_back(i);
-			vis[i]=true;
-			for(j=0;j<(int)graph[i].size();j++)
-			{
-				if(!vis[graph[i][j]])
-				{
-					vis[graph[i][j]]=true;
-					break;
+class NodoLuz {
+private:
+	int _pos;
+	int _deg;
+
+};
+class WiSun {
+private:
+	int _size;
+	vector<int> lights;
+public:
+	WiSun(string path){
+		ifstream f;
+		f.open(path);
+		if(f.is_open()){
+			f >> _size;
+
+			cout << endl << path << endl;
+			cout << "El tamanio es de: " << _size << endl;
+			
+			int light = 0;
+			while(!f.eof()){
+				f >> light;
+				lights.push_back(light);
+			}
+			f.close();
+		}
+	}
+
+	void printWiSun(){
+		for (int i = 0; i < _size; i ++) {
+			for (int j =0; j< _size; j++){
+				cout << lights[_size*i+j] << " ";
+			}
+			cout << endl;
+    	}
+	}
+	//SOLUCIOON : se coge el primero y se marcan los nodos que cunbre como cubiertos y se coge el siguiente no cubierto ...
+	vector<int> solve_dominant(){
+		bool covered[_size];
+		for (int i = 0; i < _size; i++){covered[i]= false;}
+		cout << "Pasa el vector de bool" << endl;
+		vector<int> sol;
+		for(int i = 0; i < _size; i++){
+			if(!covered[i]){
+				sol.push_back(i);
+				covered[i] = true;
+				for(int j = 0; j < _size; j++){
+					if(!covered[j] && lights[i*_size + j] == 1){
+						covered[j] = true;
+					}
 				}
 			}
 		}
+		return sol;
 	}
-	return S;
-}
-int main()
-{
-	int n,e,x,y;
-	cout<<"Enter number of vertices:";
-	cin>>n;
-	cout<<"Enter number of Edges:";
-	cin>>e;
-	graph.resize(n);
-	memset(vis,0,sizeof(vis));
-	for(i=0;i<e;i++)
-	{
-		cout<<"Enter the end-points of edge "<<i+1<<" : ";
-		cin>>x>>y;
-		x--; y--;
-		graph[x].push_back(y);
-		graph[y].push_back(x);
+};
+ 
+
+
+int main(int argc, char *argv[]){
+	if (argc != 2){
+		cout << "USAGE ERROR" << endl;
+		cout << "Usage: ./practica1 <path to file>" << endl;
+		exit(1);
 	}
-	vector<int> S = solve_dominant(n,e);
-	cout<<"The required Dominant Set is as follows:\n";
-	for(i=0;i<(int)S.size();i++)
-	cout<<S[i]+1<<" ";
+
+	string path = argv[1];
+	WiSun luces = WiSun(path);
+	vector<int> sol = luces.solve_dominant();
+	cout << "La solucion es de tamaño: " << sol.size() << endl;
+	for (int s : sol){
+		cout << s << " ";
+	}
+	cout << endl;
+
 	return 0;
 }
