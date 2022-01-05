@@ -151,18 +151,15 @@ public:
 		for (int i = 0; i < nodos.size(); i++){
 			newVecinos.clear();
 			if (nodos[i].notCovered()){
-				//cout << "NODO: " << nodos[i].yo() << endl;
 				vector<int> vecinosA = nodos[i].getVecinos();
 				for (int va : vecinosA){
 					found = false;
 					for (int v : vecinosC) {
-						//cout << "comparo: " << va << " con " << v << endl;
 						if (va == v) {
 							found = true;
 						}
 					}
 					if (found == false) {
-						//cout << "Meto en newVecinos de " << nodos[i].yo() << " " << va << endl;
 						newVecinos.push_back(va);
 					} 
 				}
@@ -172,30 +169,6 @@ public:
 				cubiertos++;
 			}
 		}
-		/*for (NodoLuz a : nodos){
-			newVecinos.clear();
-			if (a.notCovered()){
-				cout << "NODO: " << a.yo() << endl;
-				vector<int> vecinosA = a.getVecinos();
-				for (int va : vecinosA){
-					found = false;
-					for (int v : vecinosC) {
-						//cout << "comparo: " << va << " con " << v << endl;
-						if (va == v) {
-							found = true;
-						}
-					}
-					if (found == false) {
-						cout << "Meto en newVecinos de " << a.yo() << " " << va << endl;
-						newVecinos.push_back(va);
-					} 
-				}
-				a.changeVecinos(newVecinos);
-				a.changeGrado(newVecinos.size());
-			}else {
-				cubiertos++;
-			}
-		}*/
 		if (cubiertos == _size){
 			fin = true;
 		}else {
@@ -214,19 +187,16 @@ public:
 		vector<NodoLuz> covered = calcularGrado();
 		vector<int> D;
 		bool done = false;
+		int i = 0;
 		while (!done){
 			int nodoC = getMostDeg(covered);
 			marcarCubiertos(covered,nodoC);
 			D.push_back(nodoC);
 			actualizarPesos(nodoC, covered, done);
-			/*for (NodoLuz a : covered){
-				a.printNodoLuz();
-			}
-			cout << endl;*/
+			i++;
 		} //porque actualizar pesos puede devolver done o no 
-		//for (int i = 0; i < _size; i++) {
-			
-		//}
+
+		cout << "Resuelto en " << i << " iteraciones" << endl;
 		return D;
 		
 	}
@@ -234,18 +204,26 @@ public:
 };
 
 int main(int argc, char *argv[]){
-	if (argc != 2){
+	if (argc != 3){
 		cout << "USAGE ERROR" << endl;
-		cout << "Usage: ./practica1 <path to file>" << endl;
+		cout << "Usage: ./practica1 <mode> <path to file>" << endl;
 		exit(1);
 	}
-
-	string path = argv[1];
+	string mode = argv[1];
+	string path = argv[2];
 	WiSun luces = WiSun(path);
-	chrono::steady_clock::time_point begin = chrono::steady_clock::now();
-	//vector<int> sol = luces.solve_dominant();
-	vector<int> sol = luces.GreedyAlg();
-	chrono::steady_clock::time_point end = chrono::steady_clock::now();
+	vector<int> sol;
+	chrono::steady_clock::time_point begin;
+	chrono::steady_clock::time_point end;
+	if (mode == "R"){
+		begin = chrono::steady_clock::now();
+		sol = luces.solve_dominant();
+		end = chrono::steady_clock::now();
+	}else if (mode == "H"){
+		begin = chrono::steady_clock::now();
+		sol = luces.GreedyAlg();
+		end = chrono::steady_clock::now();
+	}
 	cout << "La solucion es de tamaño: " << sol.size() << endl;
 	for (int s : sol){
 		cout << s << " ";
