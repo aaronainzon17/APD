@@ -3,6 +3,14 @@
 #include <chrono>
  
 using namespace std;
+/*
+* Clase: NodoLuz
+* Funcion: Representa cada uno de los nodos de luz del sistema de alumbrado de la red WiSun
+* nodo: se almacena el identificador del nodo
+* grado: se almacena el grado del vertice
+* cubierto: true -> nodo cubierto; false -> nodo no cubierto
+* vecinos: vector de enteros donde se almacenan los identificadores de los vecinos
+**/
 class NodoLuz {
 private:
 	int nodo;
@@ -10,18 +18,63 @@ private:
 	bool cubierto;
 	vector<int> vecinos;
 public:
-
+	/*Constructor vacio*/
 	NodoLuz();
+
+	/*Constructor de un nodoLuz*/
 	NodoLuz(int n, int deg, vector<int> v, bool cov): nodo(n),grado(deg),vecinos(v), cubierto(cov){}
 
+	/*
+	* changeGrado: actualiza el grado del nodo
+	**/
 	void changeGrado(int newGrado){
 		grado = newGrado;
 	}
 
+	/*
+	* changeVecinos: actualiza los vecinos del nodo
+	**/
 	void changeVecinos(vector<int> newVec){
 		vecinos = newVec;
 	}
 
+	/*
+	* notCovered: devuelve verdad si el nodo no esta cubierto
+	**/
+	bool notCovered(){
+		return !cubierto;
+	}
+	/*
+	* getGrado: devuelve el grado del nodo
+	**/
+	int getGrado(){
+		return grado;
+	}
+
+	/*
+	* markAsCovered: marca el nodo como cubierto
+	**/
+	void markAsCovered(){
+		cubierto = true;
+	}
+
+	/*
+	* getVecinos: devuelve los vecinos del nodo
+	**/
+	vector<int> getVecinos(){
+		return vecinos;
+	}
+
+	/*
+	* yo: devuelve el identificador del nodo
+	**/
+	int yo(){
+		return nodo;
+	}
+
+	/* (DEBUG)
+	* printNodoLuz: muestra todos los campos del nodo
+	**/
 	void printNodoLuz(){
 		cout << nodo << " - " << grado << " - ";
 		for (int a : vecinos){
@@ -30,26 +83,9 @@ public:
 		cout << endl;
 	}
 
-	bool notCovered(){
-		return !cubierto;
-	}
-
-	int getGrado(){
-		return grado;
-	}
-
-	void markAsCovered(){
-		cubierto = true;
-	}
-
-	vector<int> getVecinos(){
-		return vecinos;
-	}
-
-	int me(){
-		return nodo;
-	}
-
+	/* (DEBUG)
+	* info: muesta el identificador del nodo y si esta cubierto o no
+	**/
 	void info(){
 		string cub = "NO";
 		if (cubierto) {
@@ -57,17 +93,24 @@ public:
 		}
 		cout << nodo << "-" << cub << " "; 
 	}
-
-	int yo(){
-		return nodo;
-	}
-
 };
+
+/*
+* Clase: WiSun
+* Funcion: Representa la red de nodos de luz
+* _size: numero de nodos de la red
+* lights: vector de enteros que representan el grafo de conexiones entre
+* 		  los nodos del sistema 
+**/
 class WiSun {
 private:
 	int _size;
 	vector<int> lights;
 public:
+	/*
+	* Constructor encargado de leer el grafo de conexiones del fichero e
+	* instanciar la clase WiSun
+	**/
 	WiSun(string path){
 		ifstream f;
 		f.open(path);
@@ -86,6 +129,9 @@ public:
 		}
 	}
 
+	/*
+	* printWiSun: muestra el grafo de conexiones
+	**/
 	void printWiSun(){
 		for (int i = 0; i < _size; i ++) {
 			for (int j =0; j< _size; j++){
@@ -96,7 +142,11 @@ public:
 	}
 
 	//SOLUCION : se coge el primero y se marcan los nodos que cubre como cubiertos y se coge el siguiente no cubierto ...
-	vector<int> solve_dominant(){
+	/*
+	* conjuntoDominante: devuelve sol, siendo el conjunto dominante del 
+	* 	grafo de conexiones cargado.
+	**/
+	vector<int> conjuntoDominante(){
 		bool covered[_size];
 		for (int i = 0; i < _size; i++){covered[i]= false;}
 		cout << "Pasa el vector de bool" << endl;
@@ -115,6 +165,10 @@ public:
 		return sol;
 	}
 
+	/*
+	* calcularGrado: calcula el grado y el vector de vecinos 
+	* de cada uno de los nodos del grafo
+	**/
 	vector<NodoLuz> calcularGrado(){
 		vector<NodoLuz> v;
 		vector<int> vecinos;
@@ -130,6 +184,9 @@ public:
 		return v;
 	} 
 
+	/*
+	* getMostDeg: devuelve el identificador del nodo que tiene mayor grado
+	**/
 	int getMostDeg(vector<NodoLuz> covered) {
 		int i = 0, nodoSol;
 		int maxGrado = 0;
@@ -143,6 +200,10 @@ public:
 		return nodoSol;
 	}
 
+	/*
+	* actualizarPesos: actualiza el grado y el numero de vecinos no cubiertos 
+	* de cada nodo tras haber elegido uno para el conjnto dominante
+	**/
 	void actualizarPesos(int nodoC,vector<NodoLuz>& nodos, bool &fin){
 		vector<int> vecinosC = nodos[nodoC].getVecinos();
 		vector<int> newVecinos;
@@ -176,6 +237,9 @@ public:
 		}
 	}
 
+	/*
+	* marcarCubiertos: marca como cubiertos todos los vecinos del nodo elegido
+	**/
 	void marcarCubiertos(vector<NodoLuz>& nodos, int nodoC){
 		vector<int> vecinosC = nodos[nodoC].getVecinos();
 		for (int v : vecinosC) {
@@ -183,6 +247,10 @@ public:
 		}
 	}
 
+
+	/*
+	* GreedyAlg: resuelve el conjunto dominante utilizando una heuristica voraz
+	**/
 	vector<int> GreedyAlg() {
 		vector<NodoLuz> covered = calcularGrado();
 		vector<int> D;
@@ -217,7 +285,7 @@ int main(int argc, char *argv[]){
 	chrono::steady_clock::time_point end;
 	if (mode == "R"){
 		begin = chrono::steady_clock::now();
-		sol = luces.solve_dominant();
+		sol = luces.conjuntoDominante();
 		end = chrono::steady_clock::now();
 	}else if (mode == "H"){
 		begin = chrono::steady_clock::now();
