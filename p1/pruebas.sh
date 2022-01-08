@@ -1,23 +1,18 @@
 #!/bin/bash
 
-NOEDGES=$(ls testing/noEdges/)
+PRUEBAS=$(ls pruebasEntrega/)
 ONECLIQUE=$(ls testing/oneClique/)
 TWOCLIQUE=$(ls testing/twoClique/)
 RAND=$(ls testing/random/)
 CIRCLE="testing/circle.txt"
 
-for PROG in $NOEDGES; do
-        echo "testing/noEdges/"$PROG
+make
+
+for PROG in $PRUEBAS; do
+        #echo "PROBANDO: pruebasEntrega/"$PROG
+        ./practica1 R "pruebasEntrega/"$PROG
+        ./practica1 H "pruebasEntrega/"$PROG
+        
 done;
 
-for PROG in $ONECLIQUE; do
-        echo "testing/oneClique/"$PROG
-done;
-
-for PROG in $TWOCLIQUE; do
-        echo "testing/twoClique/"$PROG
-done;
-
-for PROG in $RAND; do
-        echo "testing/random/"$PROG
-done;
+make clean

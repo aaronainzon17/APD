@@ -151,8 +151,8 @@ public:
 		if(f.is_open()){
 			f >> _size;
 
-			cout << endl << path << endl;
-			cout << "El tamanio es de: " << _size << endl;
+			//cout << endl << path << endl;
+			//cout << "El tamanio es de: " << _size << endl;
 			
 			int light = 0;
 			vector<int> vecinos;
@@ -186,58 +186,60 @@ public:
 	* conjuntoDominante: devuelve sol, siendo el conjunto dominante del 
 	* 	grafo de conexiones cargado.
 	**/
-	/*vector<int> conjuntoDominante(){
-		bool covered[_size];
-		for (int i = 0; i < _size; i++){covered[i]= false;}
-		cout << "Pasa el vector de bool" << endl;
-		vector<int> sol;
+	vector<int> conjuntoDominante(){
+		vector<int> D;
+		int v = 0;
+		do{
+			v = elegirNodo();
+			if (v != -1){
+				D.push_back(v);
+				ajustarGrado(v);
+			}
+		}while(v != -1);
+		//checkAllCovered();
+		return D;
+	}
+
+	void checkAllCovered() {
+		for (int i = 0; i< _size; i++){
+			if (lights[i].notCovered()){
+				cout << "El nodo " << i << " no se ha cubierto" << endl;
+			}
+		}
+	}
+
+	/*
+	* elegirNodo: devuelve el identificador del nodo no cubierto de mayor grado
+	**/
+	int elegirNodo() {
+		int max = 0;
+		int nodo = -1;
 		for(int i = 0; i < _size; i++){
-			if(!covered[i]){
-				sol.push_back(i);
-				covered[i] = true;
-				for(int j = 0; j < _size; j++){
-					if(!covered[j] && lights[i*_size + j] == 1){
-						covered[j] = true;
-					}
-				}
-			}
+			if (lights[i].getGrado() + 1 > max && lights[i].notCovered()){
+				max = lights[i].getGrado() + 1;
+				nodo = i;
+			}	
 		}
-		return sol;
-	}*/
+		if (max == 0){
+			return -1;
+		}else {
+			return nodo;
+		}
+	}
 
-	/*
-	* calcularGrado: calcula el grado y el vector de vecinos 
-	* de cada uno de los nodos del grafo
-	**/
-	/*vector<NodoLuz> calcularGrado(){
-		vector<NodoLuz> v;
-		vector<int> vecinos;
-		for (int i = 0; i < _size; i++){
-			vecinos.clear();
-			for (int j = 0; j < _size; j++){
-				if (lights[i*_size + j] == 1) {
-					vecinos.push_back(j);
-				}
-			}
-			v.push_back(NodoLuz(i,vecinos.size(),vecinos,false));
-		}
-		return v;
-	}*/ 
 
-	/*
-	* getMostDeg: devuelve el identificador del nodo que tiene mayor grado
-	**/
-	int getMostDeg(vector<NodoLuz> covered) {
-		int i = 0, nodoSol;
-		int maxGrado = 0;
-		for (NodoLuz a : covered){
-			if (a.notCovered() && a.getGrado() >= maxGrado){
-				nodoSol = i; 
-				maxGrado = a.getGrado();
+	void ajustarGrado(int i){
+		vector<int> vecinos = lights[i].getVecinos();
+		for (int j : vecinos) {
+			if (lights[j].notCovered()){
+				vector<int> vecinosJ = lights[j].getVecinos();
+				for (int k : vecinosJ) {
+					lights[k].changeGrado((lights[k].getGrado() -1));
+				}
+				lights[j].setCovered(true);
 			}
-			i++;
 		}
-		return nodoSol;
+		lights[i].setCovered(true);
 	}
 
 	/*
@@ -287,28 +289,6 @@ public:
 		}
 	}
 
-
-	/*
-	* GreedyAlg: resuelve el conjunto dominante utilizando una heuristica voraz
-	**/
-	/*vector<int> GreedyAlg() {
-		vector<NodoLuz> covered = calcularGrado();
-		vector<int> D;
-		bool done = false;
-		int i = 0;
-		while (!done){
-			int nodoC = getMostDeg(covered);
-			marcarCubiertos(covered,nodoC);
-			D.push_back(nodoC);
-			actualizarPesos(nodoC, covered, done);
-			i++;
-		} //porque actualizar pesos puede devolver done o no 
-
-		cout << "Resuelto en " << i << " iteraciones" << endl;
-		return D;
-		
-	}*/
-
 	int chooseVertex(){
 		int max = 0;
 		int nodo = -1;
@@ -318,7 +298,7 @@ public:
 				nodo = i;
 			}
 		}
-		if (max <= 0){
+		if (max == 0){
 			return -1;
 		}else {
 			return nodo;
@@ -327,27 +307,21 @@ public:
 
 	void AdjustWeights(int i) {
 		lights[i].setWeight(0);
-		//int voteI = lights[i].getVote();
+		int voteI = lights[i].getVote();
 		vector<int> vecinos = lights[i].getVecinos();
 		for (int j : vecinos) {
-			//cout << "Trato a " << j << endl;
 			if (lights[j].getWeight() > 0) {
 				if (lights[i].notCovered()){
 					lights[j].setWeight((lights[j].getWeight() - lights[i].getVote()));
-					//cout << "actualizo el peso de "<< j <<" a " << lights[j].getWeight() << endl;
 				}
 				if(lights[j].notCovered()){
-					//cout << "Como " << j << " no esta cubierto" << endl;
 					lights[j].setCovered(true);
 					lights[j].setWeight((lights[j].getWeight() - lights[j].getVote()));
-					//cout << "actualizo el peso de "<< j <<" a " << lights[j].getWeight() << endl;
 					vector<int> vecinosJ = lights[j].getVecinos();
-					//int voteJ = lights[j].getVote();
-					//cout << "Actualizo los vecinos de " << j << endl;
+					int voteJ = lights[j].getVote();
 					for (int k : vecinosJ) {
 						if (lights[k].getWeight() > 0) {
 							lights[k].setWeight((lights[k].getWeight() - lights[j].getVote()));
-							//cout << "actualizo el peso de"<< k <<" vecino de" << j << " a " << lights[k].getWeight() << endl;
 						}
 					}
 				}
@@ -355,7 +329,10 @@ public:
 		}
 		lights[i].setCovered(true);
 	}
-
+	
+	/*
+	* GreedyVote: resuelve el conjunto dominante utilizando una heuristica voraz
+	**/
 	vector<int> GreedyVote() {
 		vector<int> D;
 		for (int i = 0; i < _size; i++){
@@ -369,18 +346,14 @@ public:
 			}
 		}
 		int v = 0;
-		while(v != -1){
-			//cout << "----------------------------------" << endl;
-			//for (int i = 0; i < _size; i++){
-			//	lights[i].printNodoLuz();
-			//}
+		do{
 			v = chooseVertex();
-			//cout << "El nodo elegido es: " << v << endl;
 			if (v != -1){
 				D.push_back(v);
 				AdjustWeights(v);
 			}
-		}
+		}while(v != -1);
+		checkAllCovered();
 		return D;
 	}
 
@@ -400,26 +373,23 @@ int main(int argc, char *argv[]){
 	chrono::steady_clock::time_point end;
 	if (mode == "R"){
 		begin = chrono::steady_clock::now();
-		//sol = luces.conjuntoDominante();
+		sol = luces.conjuntoDominante();
 		end = chrono::steady_clock::now();
 	}else if (mode == "H"){
 		begin = chrono::steady_clock::now();
 		sol = luces.GreedyVote();
 		end = chrono::steady_clock::now();
 	}
+	int elapsed = chrono::duration_cast<chrono::microseconds>(end - begin).count();
+
+	//cout << mode << "," << path << "," << sol.size() << "," << elapsed << "us"<< endl;
 	cout << "La solucion es de tamaño: " << sol.size() << endl;
 	for (int s : sol){
 		cout << s << " ";
 	}
 	cout << endl;
-	int elapsed = chrono::duration_cast<chrono::milliseconds>(end - begin).count();
-	if (elapsed > 0) {
-		cout << "Tiempo de ejecucion: " <<  elapsed << " ms" << endl;
-	}else {
-		elapsed = chrono::duration_cast<chrono::microseconds>(end - begin).count();
-		cout << "Tiempo de ejecucion: " <<  elapsed << " µs" << endl;
-	}
 	
+	cout << "Tiempo de ejecucion: " <<  elapsed << " us" << endl;
 
 	return 0;
 }
