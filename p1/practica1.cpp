@@ -181,7 +181,18 @@ public:
     	}
 	}
 
-	//SOLUCION : se coge el primero y se marcan los nodos que cubre como cubiertos y se coge el siguiente no cubierto ...
+	/* (DEBUG)
+	* checkAllCovered: muestra un mensaje por pantalla con los nodos que no 
+	* han sido cubiertos. Se ha utilizado para el debug de los algoritmos.
+	**/
+	void checkAllCovered() {
+		for (int i = 0; i< _size; i++){
+			if (lights[i].notCovered()){
+				cout << "El nodo " << i << " no se ha cubierto" << endl;
+			}
+		}
+	}
+
 	/*
 	* conjuntoDominante: devuelve sol, siendo el conjunto dominante del 
 	* 	grafo de conexiones cargado.
@@ -196,16 +207,7 @@ public:
 				ajustarGrado(v);
 			}
 		}while(v != -1);
-		//checkAllCovered();
 		return D;
-	}
-
-	void checkAllCovered() {
-		for (int i = 0; i< _size; i++){
-			if (lights[i].notCovered()){
-				cout << "El nodo " << i << " no se ha cubierto" << endl;
-			}
-		}
 	}
 
 	/*
@@ -227,7 +229,9 @@ public:
 		}
 	}
 
-
+	/*
+	* ajustarGrado: decrementa el grado de los vecinos de cada nodo cubierto
+	**/
 	void ajustarGrado(int i){
 		vector<int> vecinos = lights[i].getVecinos();
 		for (int j : vecinos) {
