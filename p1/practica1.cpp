@@ -172,7 +172,7 @@ public:
 		}
 	}
 
-	/*
+	/* (DEBUG)
 	* printWiSun: muestra el grafo de conexiones
 	**/
 	void printWiSun(){
@@ -207,6 +207,7 @@ public:
 				ajustarGrado(v);
 			}
 		}while(v != -1);
+		//checkAllCovered();
 		return D;
 	}
 
@@ -293,6 +294,9 @@ public:
 		}
 	}
 
+	/*
+	* chooseVertex: devuelve el nodo de mayor peso
+	**/
 	int chooseVertex(){
 		int max = 0;
 		int nodo = -1;
@@ -309,6 +313,11 @@ public:
 		}
 	}
 
+	/*
+	* AdjustWeights: marca el nodo i como cubierto y todos sus vecinos.
+	* Ademas, se encarga de ajustar los pesos de todos los nodos vecinos a los 
+	* marcados como cubiertos restando el vote del nodo cubierto a su peso. 
+	**/
 	void AdjustWeights(int i) {
 		lights[i].setWeight(0);
 		int voteI = lights[i].getVote();
@@ -357,7 +366,7 @@ public:
 				AdjustWeights(v);
 			}
 		}while(v != -1);
-		checkAllCovered();
+		//checkAllCovered();
 		return D;
 	}
 
