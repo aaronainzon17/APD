@@ -207,7 +207,7 @@ public:
 				ajustarGrado(v);
 			}
 		}while(v != -1);
-		checkAllCovered();
+		//checkAllCovered();
 		return D;
 	}
 
@@ -245,53 +245,6 @@ public:
 			}
 		}
 		lights[i].setCovered(true);
-	}
-
-	/*
-	* actualizarPesos: actualiza el grado y el numero de vecinos no cubiertos 
-	* de cada nodo tras haber elegido uno para el conjnto dominante
-	**/
-	void actualizarPesos(int nodoC,vector<NodoLuz>& nodos, bool &fin){
-		vector<int> vecinosC = nodos[nodoC].getVecinos();
-		vector<int> newVecinos;
-		bool found = false;
-		int cubiertos = 0;
-		for (int i = 0; i < nodos.size(); i++){
-			newVecinos.clear();
-			if (nodos[i].notCovered()){
-				vector<int> vecinosA = nodos[i].getVecinos();
-				for (int va : vecinosA){
-					found = false;
-					for (int v : vecinosC) {
-						if (va == v) {
-							found = true;
-						}
-					}
-					if (found == false) {
-						newVecinos.push_back(va);
-					} 
-				}
-				nodos[i].changeVecinos(newVecinos);
-				nodos[i].changeGrado(newVecinos.size());
-			}else {
-				cubiertos++;
-			}
-		}
-		if (cubiertos == _size){
-			fin = true;
-		}else {
-			fin = false;
-		}
-	}
-
-	/*
-	* marcarCubiertos: marca como cubiertos todos los vecinos del nodo elegido
-	**/
-	void marcarCubiertos(vector<NodoLuz>& nodos, int nodoC){
-		vector<int> vecinosC = nodos[nodoC].getVecinos();
-		for (int v : vecinosC) {
-			nodos[v].setCovered(true);
-		}
 	}
 
 	/*
@@ -366,7 +319,7 @@ public:
 				AdjustWeights(v);
 			}
 		}while(v != -1);
-		checkAllCovered();
+		//checkAllCovered();
 		return D;
 	}
 
