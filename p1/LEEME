@@ -1,0 +1,30 @@
+Ibáñez Espés, Aaron 779088@unizar.es    a779088
+Fernando Gomez, Osta 774762@unizar.es    a774762
+
+El fichero practica1.cpp consta de dos clases:
+    - NodoLuz: esta clase representa cada uno de los nodos de la red de iluminación. 
+        En ella se almacena el identificador del nodo en la red, su grado, un vector 
+        con los identificadores de sus nodos vecinos, un valor indicativo de si el 
+        nodo se encuentra cubierto o no y, en caso de utilizar el algoritmo GreedyVote, 
+        los valores de vote y weight.
+
+    - WiSun: recibe este nombre debido al nombre de la tecnología. En esta clase se 
+        almacena una variable de tipo entero con el número de nodos de la red y un 
+        vector de tipo NodoLuz con toda la información sobre ellos.
+
+Cada una de las clases esta dotada de los metodos necesarios para poder desarrollar 
+la implementación de los algoritmos aproximados para resolver el problema.
+
+Se ha creado un Makefile el cual facilita la compilacion de la practica:
+    - Para compilar se utiliza el comando make.
+    - Para eliminar el fichero compilado, make clean.
+
+Para la ejecución se requiere de dos argumentos
+    - El primer argumento es el tipo de algoritmo que se quiere utilizar, R si se quiere 
+        utilizar la implementación aproximada y H si se quiere la heurística.
+    - El segundo argumento es el path al fichero que se quiere cargar.
+
+Para facilitar la ejecucion de las pruebas se ha creado un script de shell el cual ejecuta 
+todas las pruebas de la carpeta pruebasEntrega automaticamente con ambas implementaciones.
+    - El script se llama pruebas.sh y para su ejecución simplemente se tiene que conceder 
+        permiso de ejecucion con chmod u+x pruebas.sh y se ejecuta con ./pruebas.sh.

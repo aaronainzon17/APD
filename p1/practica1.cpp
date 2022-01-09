@@ -207,7 +207,7 @@ public:
 				ajustarGrado(v);
 			}
 		}while(v != -1);
-		//checkAllCovered();
+		checkAllCovered();
 		return D;
 	}
 
@@ -366,7 +366,7 @@ public:
 				AdjustWeights(v);
 			}
 		}while(v != -1);
-		//checkAllCovered();
+		checkAllCovered();
 		return D;
 	}
 
