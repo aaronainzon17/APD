@@ -100,7 +100,7 @@ public:
     }   
 };
 
-class Almacen {
+class Ruta {
 private:
     int nIntersecciones;
     int mCarreteras;
@@ -110,14 +110,14 @@ private:
     vector<Carretera*> carreteras;
     vector<Interseccion> intersecciones;
 public:
-    Almacen(){}
+    Ruta(){}
 
-    Almacen(string path){
+    Ruta(string path){
         ifstream f;
 		f.open(path);
 		if(f.is_open()){
 			f >> nIntersecciones >> mCarreteras >> cVivienda >> almacenA >> almacenB;
-			//cout << endl << path << endl;
+			cout << endl << path << endl;
 			//cout << "El tamanio es de: " << _size << endl;
             for (int i = 0; i < nIntersecciones; i++){
                 intersecciones.push_back(Interseccion(i+1));
@@ -131,8 +131,8 @@ public:
                 f >> ini >> fin >> tiempo >> prob_uv >> prob_vu;
                 
                 carreteras.push_back(new Carretera(ini,fin,tiempo,prob_uv,prob_vu));
-                //cout << "Anyado nueva carretera" << endl;
-                //carreteras[indexRoad]->printCarretera();
+                cout << "Anyado nueva carretera" << endl;
+                carreteras[indexRoad]->printCarretera();
                 //Crear las N intersecciones
                 intersecciones[ini-1].addCarretera(carreteras[indexRoad]);
                 intersecciones[fin-1].addCarretera(carreteras[indexRoad]);
@@ -142,7 +142,7 @@ public:
 		}
     }
 
-    void printAlmacen(){
+    void printRuta(){
         cout << "N: " << nIntersecciones << ", M: " << mCarreteras << ", C: " << cVivienda;
         cout << ", A: " << almacenA << ", B: " << almacenB << endl;
         for (Interseccion i : intersecciones){
@@ -157,7 +157,8 @@ public:
         cout << "Estoy en: " << estoy.getId() << endl;
         //estoy.printInterseccion();
         int tiempo = 0;
-        while(!caminoEncontrado && !perdido){
+        int i = 0;
+        while(!caminoEncontrado && !perdido && i < 1000000){
             float prob = rand()%10000;
             prob /= 10000;
             float acum = 0.0;
@@ -165,13 +166,13 @@ public:
             for (Carretera *c : carrEstoy){
                 if (c->getU() == estoy.getId() && prob < c->getPuv()+acum){
                     estoy = intersecciones[c->getV()-1];
-                    cout << "Avanzo a " << c->getV() << ", ";
+                    //cout << "Avanzo a " << c->getV() << ", ";
                     tiempo += c->getTuv();
                     acum += c->getPuv();
                     break;
                 }else if (c->getV() == estoy.getId() && prob < c->getPvu()+acum){
                     estoy = intersecciones[c->getU()-1];
-                    cout << "Retrocedo a " << c->getU() << ", ";
+                    //cout << "Retrocedo a " << c->getU() << ", ";
                     tiempo += c->getTuv();
                     acum += c->getPvu();
                     break;
@@ -190,6 +191,7 @@ public:
                 caminoEncontrado = true;
                 cout << "PONGO ENCONTRADO A TRUE" << endl;
             }
+            i++;
         }
         return tiempo;
     }
@@ -201,7 +203,8 @@ public:
         cout << "Estoy en: " << estoy.getId() << endl;
         //estoy.printInterseccion();
         int tiempo = 0;
-        while(!caminoEncontrado && !perdido){
+        int i = 0;
+        while(!caminoEncontrado && !perdido && i < 1000000){
             float prob = rand()%10000;
             prob /= 10000;
             float acum = 0.0;
@@ -209,13 +212,13 @@ public:
             for (Carretera *c : carrEstoy){
                 if (c->getU() == estoy.getId() && prob < c->getPuv()+acum){
                     estoy = intersecciones[c->getV()-1];
-                    cout << "Avanzo a " << c->getV() << ", ";
+                    //cout << "Avanzo a " << c->getV() << ", ";
                     tiempo += c->getTuv();
                     acum += c->getPuv();
                     break;
                 }else if (c->getV() == estoy.getId() && prob < c->getPvu()+acum){
                     estoy = intersecciones[c->getU()-1];
-                    cout << "Retrocedo a " << c->getU() << ", ";
+                    //cout << "Retrocedo a " << c->getU() << ", ";
                     tiempo += c->getTuv();
                     acum += c->getPvu();
                     break;
@@ -232,8 +235,9 @@ public:
                 }
             if (estoy.getId() == cVivienda) {
                 caminoEncontrado = true;
-                cout << "PONGO ENCONTRADO A TRUE" << endl;
+                cout << "HE ENCONTRADO EL CAMINO" << endl;
             }
+            i++;
         }
         return tiempo;
     }
@@ -256,10 +260,10 @@ int main(int argc, char *argv[]){
 		exit(1);
 	}
     string path = argv[1];
-    Almacen a = Almacen(path);
+    Ruta a = Ruta(path);
     int tiempoA, tiempoB;
     //a.printAlmacen();
-    //tiempoA = a.caminoA();
+    tiempoA = a.caminoA();
     tiempoB = a.caminoB();
     if (tiempoA == -1) {
         cout << "Intentamos entregar tu paquete, pero no estabas" << endl;
@@ -269,7 +273,7 @@ int main(int argc, char *argv[]){
     if (tiempoB == -1) {
         cout << "Intentamos entregar tu paquete, pero no estabas" << endl;
     }else {
-        cout << "El tiempo que le cuesta al repartidor del camino A es: " << tiempoB << " minutos" << endl;
+        cout << "El tiempo que le cuesta al repartidor del camino B es: " << tiempoB << " minutos" << endl;
     }
     
     return 0;
