@@ -42,12 +42,12 @@ int main(int argc, char *argv[]){
     while (unidoA == almacen1){
         unidoA = rand()%(nIntersecciones-1) + 1;
     }
-    f << to_string(almacen1) << " " << to_string(unidoA) << " " << "1" << " " << "1" << " "  << "0" << endl;
+    f << to_string(almacen1) << " " << to_string(unidoA) << " " << to_string((int)(30*generator(num))) << " " << "1" << " "  << "0" << endl;
     unidoA = rand()%(nIntersecciones-1) + 1;
     while (unidoA == almacen2){
         unidoA = rand()%(nIntersecciones-1) + 1;
     }
-    f << to_string(almacen2) << " " << to_string(unidoA) << " " << "1" << " " << "1" << " "  << "0" << endl;
+    f << to_string(almacen2) << " " << to_string(unidoA) << " " << to_string((int)(30*generator(num))) << " " << "1" << " "  << "0" << endl;
     
     for (int i = 1; i <= nIntersecciones; i++) {
         if (i != almacen1 && i != almacen2){
@@ -67,8 +67,9 @@ int main(int argc, char *argv[]){
                 if (i == casa) {
                     pvu = 0;
                 }
-                f << to_string(i) << " " << to_string(unidoA) << " " << "1" << " " << to_string(puv) << " "  << to_string(pvu) << endl;
+                f << to_string(i) << " " << to_string(unidoA) << " " << to_string((int)(30*generator(num))) << " " << to_string(puv) << " "  << to_string(pvu) << endl;
                 nCI[i - 1][unidoA - 1] = true;
+                nCI[unidoA - 1][i - 1] = true;
             }
             
             int unidoA = rand()%(nIntersecciones-1) + 1;
@@ -79,31 +80,11 @@ int main(int argc, char *argv[]){
                 if (i == casa) {
                     pvu = 0;
                 }
-            f << to_string(i) << " " << to_string(unidoA) << " " << "1" << " " << to_string(1- totPuv) << " " << to_string(pvu) << endl;
+            f << to_string(i) << " " << to_string(unidoA) << " " << to_string((int)(30*generator(num))) << " " << to_string(1- totPuv) << " " << to_string(pvu) << endl;
             nCI[i - 1][unidoA - 1] = true;   
+            nCI[unidoA - 1][i - 1] = true;
         }
     }
-    
-    
-    //Este hace solo nCarreteras de entrada y salida
-    /*int nCI[nIntersecciones] = {0};
-    for (int i = 2; i < nIntersecciones; i++) {
-        float totPuv = 0;
-        while (nCI[i] < nCarreteras - 1){
-            int unidoA = rand()%nIntersecciones;
-            float puv = generator(num);
-            totPuv += puv;
-            f << to_string(i) << " " << to_string(unidoA) << " " << "1" << " " << to_string(puv) << " "  << to_string(generator(num)) << endl;
-            nCI[unidoA]++;
-            nCI[i]++;
-        }
-        int unidoA = rand()%nIntersecciones;
-
-        f << to_string(i) << " " << to_string(unidoA) << " " << "1" << " " << to_string(1- totPuv) << " " << to_string(generator(num)) << endl;
-        nCI[unidoA]++;
-        nCI[i]++;   
-
-    }*/
     f.close();
 }
  

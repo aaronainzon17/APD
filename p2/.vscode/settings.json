@@ -2,6 +2,10 @@
     "files.associations": {
         "iosfwd": "cpp",
         "iostream": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "chrono": "cpp",
+        "initializer_list": "cpp",
+        "valarray": "cpp",
+        "*.tcc": "cpp"
     }
 }
