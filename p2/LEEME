@@ -1,0 +1,35 @@
+Ibáñez Espés, Aaron 779088@unizar.es    a779088
+Fernando Gomez, Osta 774762@unizar.es    a774762
+
+El fichero practica2.cpp consta de dos clases:
+    - Carretera: Esta clase como su nombre indica representa una carretera. 
+        En ella se almacenan cinco valores relevantes, los identificadores de las
+        intersecciones que une u y v, el tiempo de recorrer la carretera t_uv 
+        y la probabilidad de ir de u a v p_uv y viceversa p_vu. Además, esta clase
+        cuenta con todos los métodos getters para cada uno de sus valores privados
+        y una función utilizada para debugar el código.
+
+    - Interseccion: Esta clase representa una intersección. En ella se almacena
+        el identificador de la intersección, el numero de carreteras que contiene 
+        y un vector que apunta a las mismas.
+
+     - Mapa: Esta clase es la clase principal utilizada para resolver el problema.
+        En ella se almacenan el numero de intersecciones, el numero de carreteras,
+        y las intersecciones donde se encuentran la vivienda, el almacén de la empresa A 
+        y el almacén de la empresa B, además de un vector que apunta a todas las intersecciones 
+        que puede haber en la ruta.
+
+Cada una de las clases esta dotada de los metodos necesarios para poder desarrollar 
+la implementación de los algoritmos aproximados para resolver el problema.
+
+Se ha creado un Makefile el cual facilita la compilacion de la practica:
+    - Para compilar se utiliza el comando make.
+    - Para eliminar el fichero compilado, make clean.
+
+Para la ejecución se requiere de un argumentos
+    - El argumento es el path al fichero que se quiere cargar.
+
+Para facilitar la ejecucion de las pruebas se ha creado un script de shell el cual ejecuta 
+todas las pruebas de la carpeta pruebasEntrega automaticamente con ambas implementaciones.
+    - El script se llama pruebas.sh y para su ejecución simplemente se tiene que conceder 
+        permiso de ejecucion con chmod u+x pruebas.sh y se ejecuta con ./pruebas.sh.
